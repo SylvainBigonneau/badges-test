@@ -44,3 +44,11 @@ class ModelDetailView(DetailView):
     queryset = Model.objects.all()
     slug_field = 'name'
     slug_url_kwarg = 'name'
+
+    def get_context_data(self, **kwargs):
+        context = super(ModelDetailView, self).get_context_data(**kwargs)
+        model = context['object']
+        model.views += 1
+        model.save(update_fields=['views'])
+
+        return context

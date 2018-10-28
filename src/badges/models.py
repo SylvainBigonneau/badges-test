@@ -1,13 +1,27 @@
+from datetime import datetime
 from django.db import models
+from django.contrib.auth.models import User
 
+from models3d.models import Model
 
-class Star(models.Model):
+class BadgeManager(models.Manager):
+    # Display only active badges
+    def get_queryset(self):
+        return super(BadgeManager, self).get_queryset().filter(active_on__lte=datetime.now()).defer('active_on')
+
+class Badge(models.Model):
+    objects = BadgeManager()
+    user = models.ForeignKey(User, null=True)
+    active_on = models.DateTimeField(default=datetime.now)
+
+    class Meta:
+        abstract = True
+
+class Star(Badge):
+    model = models.ForeignKey(Model, null=True)
+
+class Collector(Badge):
     pass
 
-
-class Collector(models.Model):
-    pass
-
-
-class Pioneer(models.Model):
+class Pioneer(Badge):
     pass
