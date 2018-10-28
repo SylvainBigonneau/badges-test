@@ -11,14 +11,17 @@ class BadgeManager(models.Manager):
 
 class Badge(models.Model):
     objects = BadgeManager()
-    user = models.ForeignKey(User, null=True)
+    user = models.OneToOneField(User)
     active_on = models.DateTimeField(default=datetime.now)
 
     class Meta:
         abstract = True
 
 class Star(Badge):
-    model = models.ForeignKey(Model, null=True)
+    model = models.ForeignKey(Model)
+
+    class Meta:
+        unique_together = ('user', 'model')
 
 class Collector(Badge):
     pass
